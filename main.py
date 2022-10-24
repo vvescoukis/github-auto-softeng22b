@@ -1,5 +1,4 @@
-# This is a sample Python script.
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import argparse
 import pandas
@@ -35,12 +34,12 @@ def confirm(question, default="no"):
 
 """ update softengNN, TLNN each year... """
 def valid_team_id(team):
-    PREFIX = "softeng2022-"
+    PREFIX = "SoftEng22-"
     if pandas.isnull(team):
         return None, "team field empty"
     if not (team.startswith(PREFIX) and team[len(PREFIX):].isdigit()):
         return None, "invalid team '{}'".format(team)
-    return "softeng2022-{:02d}".format(int(team[len(PREFIX):])), None
+    return "SoftEng22-{:02d}".format(int(team[len(PREFIX):])), None
 
 def valid_github_username(username):
     if not isinstance(username, str):
@@ -92,6 +91,7 @@ def parse_team_info(verbose=True):
     for i, row in enumerate(df.itertuples(index=False, name="User"), 2):
         # If row is duplicate, print it and skip it
         if not pandas.isnull(row.id):
+            # print(row)
             id = row.id.strip()
             if id in seen:
                 info("Skipping line {}: {} was already seen in line {}".format(
@@ -180,6 +180,7 @@ class GithubOrganizationManager:
             id=self.organization.id, login=self.organization.login,
             name=self.organization.name))
         if team:
+            print(team)
             self.team = self.organization.get_team_by_slug(team)
             self.info("Team: {id} or {name}".format(
                 id=self.team.id, name=self.team.name))
@@ -258,12 +259,12 @@ class GithubOrganizationManager:
             except OSError as e:
                 self.warn("  execution failed:", e)
         with_template("git remote add {} {}".format(id, repos.ssh_url))
-        with_template("git push {} master".format(id))
+        with_template("git push {} main".format(id))
         with_template("git remote rm {}".format(id))
         # We should apply some protection to the master branch here.
         # Not yet fully supported by PyGithub, if I understand it right.
         """
-        master = repos.get_branch("master")
+        master = repos.get_branch("main")
         master.edit_protection(strict=True, ...)
         """
 
